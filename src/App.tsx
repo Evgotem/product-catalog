@@ -21,7 +21,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigProvider locale={ruRU}>
-        <BrowserRouter>
+        <BrowserRouter basename='/product-catalog'>
           {isAuthenticated ? (
             <Layout style={{ minHeight: '100vh' }}>
               <Header onLogout={logout} />
