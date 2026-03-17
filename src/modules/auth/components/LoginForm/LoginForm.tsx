@@ -1,25 +1,31 @@
 import React from 'react';
 import { Form, Input, Checkbox, Button, Typography } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, BugOutlined } from '@ant-design/icons';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuth } from '../../hooks/useAuth';
+import {
+  useAuth,
+} from '../../hooks/useAuth';
 import { loginSchema, type LoginFormData } from '../../model/schemas';
 import s from './LoginForm.module.scss';
-import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '@modules/auth/store/useAuthStore.ts';
 
 const { Title, Text } = Typography;
 
+// Тестовые данные
+const TEST_CREDENTIALS = {
+  username: 'emilys',
+  password: 'emilyspass',
+};
+
 export const LoginForm: React.FC = () => {
   const loginMutation = useAuth();
-  const { isAuthenticated } = useAuthStore();
-  
   
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
+    trigger,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: 'onSubmit',
@@ -34,12 +40,15 @@ export const LoginForm: React.FC = () => {
     loginMutation.mutate({
       username: data.username,
       password: data.password,
+      remember: data.remember,
     });
   };
   
-  if (isAuthenticated) {
-    return <Navigate to="/products" replace />;
-  }
+  const fillTestData = () => {
+    setValue('username', TEST_CREDENTIALS.username);
+    setValue('password', TEST_CREDENTIALS.password);
+    trigger();
+  };
   
   return (
     <div className={s.container}>
@@ -87,7 +96,7 @@ export const LoginForm: React.FC = () => {
           />
         </Form.Item>
 
-        <div style={{ marginBottom: 16 }}>
+        <div className={s.checkboxWrapper}>
           <Controller
             name="remember"
             control={control}
@@ -97,6 +106,18 @@ export const LoginForm: React.FC = () => {
               </Checkbox>
             )}
           />
+        </div>
+        
+        {/* Кнопка для тестовых данных */}
+        <div className={s.testButtonWrapper}>
+          <Button
+            icon={<BugOutlined />}
+            onClick={fillTestData}
+            disabled={loginMutation.isPending}
+            block
+          >
+            Заполнить тестовыми данными
+          </Button>
         </div>
 
         <Form.Item>
@@ -111,7 +132,7 @@ export const LoginForm: React.FC = () => {
           </Button>
         </Form.Item>
 
-        <div style={{ textAlign: 'center' }}>
+        <div className={s.footer}>
           <Text type="secondary">Нет аккаунта? </Text>
           <Button type="link" style={{ padding: 0 }}>
             Создать

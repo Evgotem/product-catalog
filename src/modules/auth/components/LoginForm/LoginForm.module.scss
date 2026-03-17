@@ -16,3 +16,22 @@
     margin-bottom: 8px !important;
   }
 }
+
+.testButtonWrapper {
+  margin: 16px 0;
+
+  button {
+    border-color: #e5e7eb;
+    color: #4b5563;
+
+    &:hover {
+      background: #e5e7eb;
+      border-color: #d1d5db;
+    }
+  }
+}
+
+.footer {
+  text-align: center;
+  margin-top: 8px;
+}
