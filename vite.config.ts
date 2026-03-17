@@ -2,11 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    base: '/product-catalog',
+    base: mode === 'production' ? '/product-catalog/' : '/',
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),

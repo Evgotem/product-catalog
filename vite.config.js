@@ -1,22 +1,20 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-export default defineConfig(function () {
+import { defineConfig, loadEnv } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), '');
+
     return {
         plugins: [react()],
-        base: '/product-catalog/',
+        base: env.VITE_BASE_URL || '/',
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src'),
-                '@pages': path.resolve(__dirname, './src/pages'),
                 '@modules': path.resolve(__dirname, './src/modules'),
-                '@components': path.resolve(__dirname, './src/components'),
                 '@shared': path.resolve(__dirname, './src/shared'),
+                '@pages': path.resolve(__dirname, './src/pages'),
             },
         },
-        server: {
-            port: 3000,
-            open: true,
-        },
-    };
-});
+    }
+})
