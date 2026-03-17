@@ -3,7 +3,7 @@ import { Form, Input, Checkbox, Button, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useLogin } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { loginSchema, type LoginFormData } from '../../model/schemas';
 import s from './LoginForm.module.scss';
 import { Navigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { useAuthStore } from '@modules/auth/store/useAuthStore.ts';
 const { Title, Text } = Typography;
 
 export const LoginForm: React.FC = () => {
-  const loginMutation = useLogin();
+  const loginMutation = useAuth();
   const { isAuthenticated } = useAuthStore();
   
   

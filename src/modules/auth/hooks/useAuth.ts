@@ -1,28 +1,20 @@
 import { useMutation } from '@tanstack/react-query';
-import { useAuthStore } from '../store/useAuthStore.ts';
-import type { LoginRequest, AuthResponse } from '../model/types';
-import { axiosClient } from '@shared/api/axios.ts';
+import { authApi } from '../api/authApi';
+import { useAuthStore } from '../store/useAuthStore';
+import type { LoginRequest } from '../model/types';
 
-export const useLogin = () => {
+export const useAuth = () => {
   const { setAuth } = useAuthStore();
   
   return useMutation({
-    mutationFn: async (data: LoginRequest) => {
-      const response = await axiosClient.post<AuthResponse>('/auth/login', {
-        username: data.username,
-        password: data.password,
-        expiresInMins: 30,
-      });
-      return response.data;
-    },
-    onSuccess: (data) => {
+    mutationFn: (data: LoginRequest) => authApi.login(data),
+    onSuccess: (data, variables) => {
+      // Передаем флаг remember из переменных запроса
       setAuth(data.accessToken, {
         id: data.id,
         username: data.username,
         email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
-      });
+      }, variables.remember ?? false);
     },
   });
 };
