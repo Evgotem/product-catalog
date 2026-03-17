@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Table, Input, Typography, Badge, Image } from 'antd';
+import { Table, Input, Typography, Badge, Image, Skeleton } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { useProducts } from '../../hooks/useProducts';
@@ -8,6 +8,17 @@ import s from './ProductsTable.module.scss';
 
 const { Title, Text } = Typography;
 
+// Компонент скелетона для строки таблицы
+const TableSkeleton = () => (
+  <div className={s.skeletonRow}>
+    <Skeleton.Avatar active size="large" shape="square" />
+    <div className={s.skeletonContent}>
+      <Skeleton.Input active size="small" block />
+      <Skeleton.Input active size="small" block style={{ marginTop: 8 }} />
+    </div>
+  </div>
+);
+
 export const ProductsTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchText, setSearchText] = useState('');
@@ -15,7 +26,6 @@ export const ProductsTable: React.FC = () => {
   
   const { data, isLoading, isFetching } = useProducts(currentPage, pageSize);
   
-  // Фильтрация на клиенте для поиска
   const filteredData = useMemo(() => {
     if (!data?.products) return [];
     if (!searchText) return data.products;
@@ -89,6 +99,14 @@ export const ProductsTable: React.FC = () => {
     },
   ];
   
+  const loadingDisplay = isLoading ? (
+    <div className={s.skeletonTable}>
+      {[...Array(pageSize)].map((_, index) => (
+        <TableSkeleton key={index} />
+      ))}
+    </div>
+  ) : null;
+  
   return (
     <div className={s.container}>
       <div className={s.header}>
@@ -103,24 +121,30 @@ export const ProductsTable: React.FC = () => {
         />
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={filteredData}
-        rowKey="id"
-        loading={isLoading || isFetching}
-        pagination={{
-          current: currentPage,
-          pageSize: pageSize,
-          total: data?.total || 0,
-          onChange: (page) => setCurrentPage(page),
-          showSizeChanger: false,
-          showTotal: (total) => `Показано 1-${pageSize} из ${total}`,
-          position: ['bottomCenter'],
-        }}
-        className={s.table}
-        scroll={{ x: 1000 }}
-        bordered={false}
-      />
+      <div className={s.tableWrapper} style={{ minHeight: 500 }}>
+        {isLoading ? (
+          loadingDisplay
+        ) : (
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            rowKey="id"
+            loading={isFetching && !isLoading}
+            pagination={{
+              current: currentPage,
+              pageSize: pageSize,
+              total: data?.total || 0,
+              onChange: (page) => setCurrentPage(page),
+              showSizeChanger: false,
+              showTotal: (total) => `Показано 1-${pageSize} из ${total}`,
+              position: ['bottomCenter'],
+            }}
+            className={s.table}
+            scroll={{ x: 1000 }}
+            bordered={false}
+          />
+        )}
+      </div>
     </div>
   );
 };
