@@ -1,4 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  Navigate,
+  HashRouter,
+} from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ConfigProvider } from 'antd';
 import ruRU from 'antd/locale/ru_RU';
@@ -14,15 +19,13 @@ import {
   ProductsPage,
 } from '@/pages';
 
-const basename = import.meta.env.VITE_BASE_URL || '';
-
 function App() {
   const { isAuthenticated } = useAuthStore();
   
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigProvider locale={ruRU}>
-        <BrowserRouter basename={basename}>
+        <HashRouter>
           {isAuthenticated && <Header onLogout={useAuthStore.getState().logout} />}
           
           <Routes>
@@ -46,7 +49,7 @@ function App() {
             
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </ConfigProvider>
     </QueryClientProvider>
   );
