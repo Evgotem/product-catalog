@@ -1,6 +1,18 @@
 import React from 'react';
-import { Form, Input, Checkbox, Button, Typography } from 'antd';
-import { UserOutlined, LockOutlined, BugOutlined } from '@ant-design/icons';
+import {
+  Form,
+  Input,
+  Checkbox,
+  Button,
+  Typography,
+  message,
+} from 'antd';
+import {
+  UserOutlined,
+  LockOutlined,
+  BugOutlined,
+  SmileOutlined,
+} from '@ant-design/icons';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -48,6 +60,15 @@ export const LoginForm: React.FC = () => {
     setValue('username', TEST_CREDENTIALS.username);
     setValue('password', TEST_CREDENTIALS.password);
     trigger();
+  };
+  
+  const handleCreateClick = () => {
+    message.open({
+      type: 'success',
+      icon: <SmileOutlined />,
+      content: 'Функция создания аккаунта в разработке. Но вы можете войти под тестовым пользователем emilys / emilyspass',
+      duration: 5,
+    });
   };
   
   return (
@@ -134,7 +155,7 @@ export const LoginForm: React.FC = () => {
 
         <div className={s.footer}>
           <Text type="secondary">Нет аккаунта? </Text>
-          <Button type="link" style={{ padding: 0 }}>
+          <Button type="link" style={{ padding: 0 }} onClick={handleCreateClick}>
             Создать
           </Button>
         </div>
